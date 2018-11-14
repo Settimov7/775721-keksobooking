@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Никита Прытков](https://up.htmlacademy.ru/javascript/16/user/775721).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Рубец](https://github.com/sergeyamator).
 
 ---
 
