@@ -255,5 +255,4 @@ function changePhototosElementList(photos, card) {
 map.classList.remove('map--faded');
 var allAnnouncement = generateAnnouncementList(ANNOUNCEMENT_QUANTITY);
 mapPins.appendChild(generateMapPinsFragment(allAnnouncement));
-console.log(generateMapCard(allAnnouncement[0]));
 map.insertBefore(generateMapCard(allAnnouncement[0]), map.querySelector('.map__filters-container'));
