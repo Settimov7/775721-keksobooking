@@ -54,7 +54,7 @@ function getRandomElement(array, canRepeat) {
 function generateRandomFeatures() {
   var array = [];
 
-  for (var i = 0; i < getRandomNumber(1, 9); i++) {
+  for (var i = 0; i < getRandomNumber(1, ALL_FEATURES.length + 1); i++) {
     array.push(getRandomElement(ALL_FEATURES, false));
   }
 
