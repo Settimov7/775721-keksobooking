@@ -61,7 +61,7 @@ function generateRandomFeatures() {
   return array;
 }
 
-function RandomSort() {
+function randomSort() {
   return Math.random() - 0.5;
 }
 
@@ -84,7 +84,7 @@ function generateAnnouncement(index) {
       checkout: getRandomElement(CHECKOUTS, true),
       features: generateRandomFeatures(),
       description: '',
-      photos: PHOTOS.sort(RandomSort)
+      photos: PHOTOS.sort(randomSort)
     },
     location: {
       x: getRandomNumber(0, map.offsetWidth + 1),
