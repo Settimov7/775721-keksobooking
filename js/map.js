@@ -221,11 +221,8 @@ function checkLocation(element, announcement) {
   var elementY = Number(element.style.top.substring(0, element.style.top.length - 2));
   var announcementX = Number(announcement.location.x);
   var announcementY = Number(announcement.location.y);
-  if (elementX === announcementX && elementY === announcementY) {
-    return true;
-  } else {
-    return false;
-  }
+
+  return elementX === announcementX && elementY === announcementY;
 }
 
 function changeMapCard(element, announcements) {
