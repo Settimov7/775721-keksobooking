@@ -35,6 +35,9 @@ var map = document.querySelector('.map');
 var mapPins = map.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var mainPin = mapPins.querySelector('.map__pin--main');
+var mapFilter = document.querySelector('.map__filters');
+var adForm = document.querySelector('.ad-form');
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -108,7 +111,7 @@ function generateMapPin(announcement) {
 
   mapPin.style.left = announcement.location.x - mapPin.offsetWidth / 2 + 'px';
   mapPin.style.top = announcement.location.y - mapPin.offsetHeight + 'px';
-  mapPin.src = announcement.author.avatar;
+  mapPin.querySelector('img').src = announcement.author.avatar;
   mapPin.alt = announcement.offer.description;
 
   return mapPin;
@@ -192,7 +195,82 @@ function showElement(element) {
   element.classList.remove('map--faded');
 }
 
-showElement(map);
+function turnOnElements(elements) {
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].disabled = false;
+  }
+}
+
+function onMainPinClick(evt) {
+  evt.preventDefault();
+
+  showElement(map);
+  adForm.classList.remove('ad-form--disabled');
+  turnOnElements(adForm.querySelectorAll('fieldset'));
+  turnOnElements(mapFilter.querySelectorAll('select'));
+  turnOnElements(mapFilter.querySelectorAll('fieldset'));
+}
+
+function getCurrentAddress() {
+  return (mainPin.getBoundingClientRect().left + pageXOffset + mainPin.offsetWidth / 2).toString()
+          + ', ' + (mainPin.getBoundingClientRect().top + pageYOffset + mainPin.offsetHeight).toString();
+}
+
+function checkLocation(element, announcement) {
+  var elementX = Number(element.style.left.substring(0, element.style.left.length - 2));
+  var elementY = Number(element.style.top.substring(0, element.style.top.length - 2));
+  var announcementX = Number(announcement.location.x);
+  var announcementY = Number(announcement.location.y);
+
+  return elementX === announcementX && elementY === announcementY;
+}
+
+function changeMapCard(element, announcements) {
+  var oldCard = map.querySelector('.map__card');
+
+  if (oldCard) {
+    map.removeChild(oldCard);
+  }
+
+  for (var i = 0; i < announcements.length; i++) {
+    if (checkLocation(element, announcements[i])) {
+      var newCard = generateMapCard(announcements[i]);
+      break;
+    }
+  }
+
+  map.insertBefore(newCard, map.querySelector('.map__filters-container'));
+  newCard.querySelector('.popup__close').addEventListener('click', function () {
+    map.removeChild(newCard);
+  });
+}
+
+function onMapPinClick(evt) {
+  evt.preventDefault();
+
+  var target = evt.target;
+  var parentElement = target.closest('.map__pin');
+
+  if (parentElement && !parentElement.classList.contains('map__pin--main')) {
+    changeMapCard(parentElement, allAnnouncement);
+  }
+}
+
+function showMapPins() {
+  mapPins.appendChild(allMapPins);
+  mainPin.removeEventListener('click', showMapPins);
+}
+
+mainPin.addEventListener('click', onMainPinClick);
+mainPin.addEventListener('click', showMapPins);
+
+mainPin.addEventListener('mouseup', function (evt) {
+  evt.preventDefault();
+
+  adForm.querySelector('#address').value = getCurrentAddress();
+});
+
+map.addEventListener('click', onMapPinClick);
+
 var allAnnouncement = generateAnnouncementList(ANNOUNCEMENT_QUANTITY);
-mapPins.appendChild(generateMapPinsFragment(allAnnouncement));
-map.insertBefore(generateMapCard(allAnnouncement[0]), map.querySelector('.map__filters-container'));
+var allMapPins = generateMapPinsFragment(allAnnouncement);
