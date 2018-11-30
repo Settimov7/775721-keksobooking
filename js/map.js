@@ -37,7 +37,14 @@ var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map_
 var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var mainPin = mapPins.querySelector('.map__pin--main');
 var mapFilter = document.querySelector('.map__filters');
+
 var adForm = document.querySelector('.ad-form');
+var inputType = adForm.querySelector('#type');
+var inputPrice = adForm.querySelector('#price');
+var inputTimeIn = adForm.querySelector('#timein');
+var inputTimeOut = adForm.querySelector('#timeout');
+var inputRoomNumber = adForm.querySelector('#room_number');
+var inputCapacity = adForm.querySelector('#capacity');
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -261,6 +268,128 @@ function showMapPins() {
   mainPin.removeEventListener('click', showMapPins);
 }
 
+function changeMinPrice() {
+  switch (inputType.value) {
+    case 'bungalo': {
+      inputPrice.min = 0;
+      inputPrice.placeholder = 0;
+      break;
+    }
+
+    case 'flat': {
+      inputPrice.min = 1000;
+      inputPrice.placeholder = 1000;
+      break;
+    }
+
+    case 'house': {
+      inputPrice.min = 5000;
+      inputPrice.placeholder = 5000;
+      break;
+    }
+
+    case 'palace': {
+      inputPrice.min = 10000;
+      inputPrice.placeholder = 10000;
+      break;
+    }
+
+    default: {
+      break;
+    }
+  }
+}
+
+function changeTimeOut() {
+  switch (inputTimeIn.value) {
+    case '12:00': {
+      inputTimeOut.value = '12:00';
+      break;
+    }
+
+    case '13:00': {
+      inputTimeOut.value = '13:00';
+      break;
+    }
+
+    case '14:00': {
+      inputTimeOut.value = '14:00';
+      break;
+    }
+
+    default: {
+      break;
+    }
+  }
+}
+
+function changeTimeIn() {
+  switch (inputTimeOut.value) {
+    case '12:00': {
+      inputTimeIn.value = '12:00';
+      break;
+    }
+
+    case '13:00': {
+      inputTimeIn.value = '13:00';
+      break;
+    }
+
+    case '14:00': {
+      inputTimeIn.value = '14:00';
+      break;
+    }
+
+    default: {
+      break;
+    }
+  }
+}
+
+function changeCapacity() {
+  switch (inputRoomNumber.value) {
+    case '1': {
+      inputCapacity.querySelector('option[value="1"]').disabled = false;
+      inputCapacity.querySelector('option[value="2"]').disabled = true;
+      inputCapacity.querySelector('option[value="3"]').disabled = true;
+      inputCapacity.querySelector('option[value="0"]').disabled = true;
+      inputCapacity.querySelector('option[value="1"]').selected = true;
+      break;
+    }
+
+    case '2': {
+      inputCapacity.querySelector('option[value="1"]').disabled = false;
+      inputCapacity.querySelector('option[value="2"]').disabled = false;
+      inputCapacity.querySelector('option[value="3"]').disabled = true;
+      inputCapacity.querySelector('option[value="0"]').disabled = true;
+      inputCapacity.querySelector('option[value="1"]').selected = true;
+      break;
+    }
+
+    case '3': {
+      inputCapacity.querySelector('option[value="1"]').disabled = false;
+      inputCapacity.querySelector('option[value="2"]').disabled = false;
+      inputCapacity.querySelector('option[value="3"]').disabled = false;
+      inputCapacity.querySelector('option[value="0"]').disabled = true;
+      inputCapacity.querySelector('option[value="1"]').selected = true;
+      break;
+    }
+
+    case '100': {
+      inputCapacity.querySelector('option[value="1"]').disabled = true;
+      inputCapacity.querySelector('option[value="2"]').disabled = true;
+      inputCapacity.querySelector('option[value="3"]').disabled = true;
+      inputCapacity.querySelector('option[value="0"]').disabled = false;
+      inputCapacity.querySelector('option[value="0"]').selected = true;
+      break;
+    }
+
+    default: {
+      break;
+    }
+  }
+}
+
 mainPin.addEventListener('click', onMainPinClick);
 mainPin.addEventListener('click', showMapPins);
 
@@ -274,3 +403,8 @@ map.addEventListener('click', onMapPinClick);
 
 var allAnnouncement = generateAnnouncementList(ANNOUNCEMENT_QUANTITY);
 var allMapPins = generateMapPinsFragment(allAnnouncement);
+
+inputType.addEventListener('change', changeMinPrice);
+inputTimeIn.addEventListener('change', changeTimeOut);
+inputTimeOut.addEventListener('change', changeTimeIn);
+inputRoomNumber.addEventListener('change', changeCapacity);
