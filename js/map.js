@@ -216,6 +216,38 @@ function getCurrentAddress() {
           + ', ' + (mainPin.getBoundingClientRect().top + pageYOffset + mainPin.offsetHeight).toString();
 }
 
+function checkLocation(element, announcement) {
+  var elementX = Number(element.style.left.substring(0, element.style.left.length - 2));
+  var elementY = Number(element.style.top.substring(0, element.style.top.length - 2));
+  var announcementX = Number(announcement.location.x);
+  var announcementY = Number(announcement.location.y);
+  if (elementX === announcementX && elementY === announcementY) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function changeMapCard(element, announcements) {
+  var oldCard = map.querySelector('.map__card');
+
+  if (oldCard) {
+    map.removeChild(oldCard);
+  }
+
+  for (var i = 0; i < announcements.length; i++) {
+    if (checkLocation(element, announcements[i])) {
+      var newCard = generateMapCard(announcements[i]);
+      break;
+    }
+  }
+
+  map.insertBefore(newCard, map.querySelector('.map__filters-container'));
+  newCard.querySelector('.popup__close').addEventListener('click', function () {
+    map.removeChild(newCard);
+  });
+}
+
 function onMapPinClick(evt) {
   evt.preventDefault();
 
@@ -223,27 +255,17 @@ function onMapPinClick(evt) {
   var parentElement = target.closest('.map__pin');
 
   if (parentElement && !parentElement.classList.contains('map__pin--main')) {
-    var parentElementX = Number(parentElement.style.left.substring(0, parentElement.style.left.length - 2));
-    var parentElementY = Number(parentElement.style.top.substring(0, parentElement.style.top.length - 2));
-    var oldCard = map.querySelector('.map__card');
-    for (var i = 0; i < allAnnouncement.length; i++) {
-      if (parentElementX === allAnnouncement[i].location.x &&
-          parentElementY === allAnnouncement[i].location.y) {
-        var newCard = generateMapCard(allAnnouncement[i]);
-        break;
-      }
-    }
-    if (oldCard) {
-      map.removeChild(oldCard);
-    }
-    map.insertBefore(newCard, map.querySelector('.map__filters-container'));
-    newCard.querySelector('.popup__close').addEventListener('click', function () {
-      map.removeChild(newCard);
-    });
+    changeMapCard(parentElement, allAnnouncement);
   }
 }
 
+function showMapPins() {
+  mapPins.appendChild(allMapPins);
+  mainPin.removeEventListener('click', showMapPins);
+}
+
 mainPin.addEventListener('click', onMainPinClick);
+mainPin.addEventListener('click', showMapPins);
 
 mainPin.addEventListener('mouseup', function (evt) {
   evt.preventDefault();
@@ -255,4 +277,3 @@ map.addEventListener('click', onMapPinClick);
 
 var allAnnouncement = generateAnnouncementList(ANNOUNCEMENT_QUANTITY);
 var allMapPins = generateMapPinsFragment(allAnnouncement);
-mapPins.appendChild(allMapPins);
