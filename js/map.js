@@ -30,6 +30,12 @@ var PHOTOS = [
 var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 630;
 var ANNOUNCEMENT_QUANTITY = 8;
+var MIN_PRICE = {
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
 
 var map = document.querySelector('.map');
 var mapPins = map.querySelector('.map__pins');
@@ -271,26 +277,26 @@ function showMapPins() {
 function changeMinPrice() {
   switch (inputType.value) {
     case 'bungalo': {
-      inputPrice.min = 0;
-      inputPrice.placeholder = 0;
+      inputPrice.min = MIN_PRICE.bungalo;
+      inputPrice.placeholder = MIN_PRICE.bungalo;
       break;
     }
 
     case 'flat': {
-      inputPrice.min = 1000;
-      inputPrice.placeholder = 1000;
+      inputPrice.min = MIN_PRICE.flat;
+      inputPrice.placeholder = MIN_PRICE.flat;
       break;
     }
 
     case 'house': {
-      inputPrice.min = 5000;
-      inputPrice.placeholder = 5000;
+      inputPrice.min = MIN_PRICE.house;
+      inputPrice.placeholder = MIN_PRICE.house;
       break;
     }
 
     case 'palace': {
-      inputPrice.min = 10000;
-      inputPrice.placeholder = 10000;
+      inputPrice.min = MIN_PRICE.palace;
+      inputPrice.placeholder = MIN_PRICE.palace;
       break;
     }
 
