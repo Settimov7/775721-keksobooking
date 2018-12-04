@@ -36,6 +36,7 @@ var MIN_PRICE = {
   house: 5000,
   palace: 10000
 };
+var MAIN_PIN_HEIGHT = 84;
 
 var map = document.querySelector('.map');
 var mapPins = map.querySelector('.map__pins');
@@ -215,8 +216,8 @@ function turnOnElements(elements) {
 }
 
 function getCurrentAddress() {
-  return (mainPin.getBoundingClientRect().left + pageXOffset + mainPin.offsetWidth / 2).toString()
-          + ', ' + (mainPin.getBoundingClientRect().top + pageYOffset + mainPin.offsetHeight).toString();
+  return (mainPin.getBoundingClientRect().left + pageXOffset + mainPin.offsetWidth / 2 - map.getBoundingClientRect().left).toString()
+          + ', ' + (mainPin.getBoundingClientRect().top + pageYOffset + MAIN_PIN_HEIGHT).toString();
 }
 
 function checkLocation(element, announcement) {
@@ -395,8 +396,8 @@ function showMapPins() {
 }
 
 function checkMainPinCoords(newPosition) {
-  return (newPosition.top > LOCATION_Y_MIN && newPosition.top < LOCATION_Y_MAX &&
-          newPosition.left > 0 && newPosition.left < map.offsetWidth - mainPin.offsetWidth);
+  return (newPosition.top >= LOCATION_Y_MIN && newPosition.top <= LOCATION_Y_MAX - MAIN_PIN_HEIGHT &&
+          newPosition.left >= 0 && newPosition.left <= map.offsetWidth - mainPin.offsetWidth);
 }
 
 function draggingMainPin(evt) {
