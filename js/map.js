@@ -214,16 +214,6 @@ function turnOnElements(elements) {
   }
 }
 
-function onMainPinClick(evt) {
-  evt.preventDefault();
-
-  showElement(map);
-  adForm.classList.remove('ad-form--disabled');
-  turnOnElements(adForm.querySelectorAll('fieldset'));
-  turnOnElements(mapFilter.querySelectorAll('select'));
-  turnOnElements(mapFilter.querySelectorAll('fieldset'));
-}
-
 function getCurrentAddress() {
   return (mainPin.getBoundingClientRect().left + pageXOffset + mainPin.offsetWidth / 2).toString()
           + ', ' + (mainPin.getBoundingClientRect().top + pageYOffset + mainPin.offsetHeight).toString();
@@ -267,11 +257,6 @@ function onMapPinClick(evt) {
   if (parentElement && !parentElement.classList.contains('map__pin--main')) {
     changeMapCard(parentElement, allAnnouncement);
   }
-}
-
-function showMapPins() {
-  mapPins.appendChild(allMapPins);
-  mainPin.removeEventListener('click', showMapPins);
 }
 
 function changeMinPrice() {
@@ -396,14 +381,72 @@ function changeCapacity() {
   }
 }
 
-mainPin.addEventListener('click', onMainPinClick);
-mainPin.addEventListener('click', showMapPins);
+function turnOnMap() {
+  showElement(map);
+  adForm.classList.remove('ad-form--disabled');
+  turnOnElements(adForm.querySelectorAll('fieldset'));
+  turnOnElements(mapFilter.querySelectorAll('select'));
+  turnOnElements(mapFilter.querySelectorAll('fieldset'));
+}
 
-mainPin.addEventListener('mouseup', function (evt) {
+function showMapPins() {
+  mapPins.appendChild(allMapPins);
+  mainPin.removeEventListener('click', showMapPins);
+}
+
+function checkMainPinCoords(newPosition) {
+  return (newPosition.top > LOCATION_Y_MIN && newPosition.top < LOCATION_Y_MAX &&
+          newPosition.left > 0 && newPosition.left < map.offsetWidth - mainPin.offsetWidth);
+}
+
+function draggingMainPin(evt) {
   evt.preventDefault();
 
-  adForm.querySelector('#address').value = getCurrentAddress();
-});
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  turnOnMap();
+
+  function onMouseMove(moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    var newPosition = {
+      top: mainPin.offsetTop - shift.y,
+      left: mainPin.offsetLeft - shift.x
+    };
+
+    if (checkMainPinCoords(newPosition)) {
+      adForm.querySelector('#address').value = getCurrentAddress();
+      mainPin.style.top = newPosition.top + 'px';
+      mainPin.style.left = newPosition.left + 'px';
+    }
+  }
+
+  function onMouseUp(downEvt) {
+    downEvt.preventDefault();
+
+    showMapPins();
+    adForm.querySelector('#address').value = getCurrentAddress();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mousedown', onMouseUp);
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+}
 
 map.addEventListener('click', onMapPinClick);
 
@@ -414,3 +457,5 @@ inputType.addEventListener('change', changeMinPrice);
 inputTimeIn.addEventListener('change', changeTimeOut);
 inputTimeOut.addEventListener('change', changeTimeIn);
 inputRoomNumber.addEventListener('change', changeCapacity);
+
+mainPin.addEventListener('mousedown', draggingMainPin);
