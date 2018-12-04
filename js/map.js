@@ -216,7 +216,7 @@ function turnOnElements(elements) {
 }
 
 function getCurrentAddress() {
-  return (mainPin.getBoundingClientRect().left + pageXOffset + mainPin.offsetWidth / 2 - map.getBoundingClientRect().left).toString()
+  return Math.round(mainPin.getBoundingClientRect().left + pageXOffset + mainPin.offsetWidth / 2 - map.getBoundingClientRect().left).toString()
           + ', ' + (mainPin.getBoundingClientRect().top + pageYOffset + MAIN_PIN_HEIGHT).toString();
 }
 
