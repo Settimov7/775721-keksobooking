@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
-
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
   var successTemplate = document.querySelector('#success').content.querySelector('.success');
   var main = document.querySelector('main');
@@ -23,14 +21,8 @@
     }
   }
 
-  function isEscEvent(evt, action) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      action();
-    }
-  }
-
   function onPopupEscPress(evt) {
-    isEscEvent(evt, closePopup);
+    window.util.isEscEvent(evt, closePopup);
   }
 
   function onPopupClick(evt) {
