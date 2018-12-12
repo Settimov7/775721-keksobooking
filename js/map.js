@@ -73,7 +73,7 @@
     turnOffElements(mapFilter.querySelectorAll('fieldset'));
 
     window.card.removeMapCard(map);
-    window.pin.removeMapPins(mapPins);
+    mapPins = window.pin.removeMapPins(map);
     resetMainPin();
   }
 
@@ -138,20 +138,27 @@
   }
 
   function onMapPinClick(evt) {
-    evt.preventDefault();
-
     var target = evt.target;
     var parentElement = target.closest('.map__pin');
 
     if (AllAnnouncements && parentElement && !parentElement.classList.contains('map__pin--main')) {
+      evt.preventDefault();
+
       window.pin.activate(parentElement);
       window.card.changeMapCard(map, parentElement, AllAnnouncements);
     }
   }
 
+  function onFilterChanged(evt) {
+    evt.preventDefault();
+
+    window.pin.updateMapPins(map, window.filterAnnouncements(mapFilter, AllAnnouncements));
+  }
+
   mainPin.addEventListener('mousedown', dragMainPin);
   window.addFormChangeListeners(adForm);
   map.addEventListener('click', onMapPinClick);
+  mapFilter.addEventListener('change', window.debounce(onFilterChanged));
 
   window.turnOffMap = turnOffMap;
 })();
