@@ -51,92 +51,87 @@
     form.querySelector('#address').value = value;
   }
 
-  function addFormChangeListeners() {
-    function onChangeMinPrice() {
-      inputPrice.min = typeToMinPrice[inputType.value];
-      inputPrice.placeholder = typeToMinPrice[inputType.value];
-    }
-
-    function changeTime(firstTime, secondTime) {
-      secondTime.value = timeToAnotherTime[firstTime.value];
-    }
-
-    function onChangeTime(evt) {
-      if (evt.target.closest('#timein')) {
-        changeTime(inputTimeIn, inputTimeOut);
-      }
-
-      if (evt.target.closest('#timeout')) {
-        changeTime(inputTimeOut, inputTimeIn);
-      }
-    }
-
-    function turnOnCapacityOption(allIncludedValues) {
-      for (var i = 0; i < allCapacityOptions.length; i++) {
-        for (var j = 0; j < allIncludedValues.length; j++) {
-          if (parseInt(allCapacityOptions[i].value, 10) === allIncludedValues[j]) {
-            allCapacityOptions[i].disabled = false;
-            break;
-          } else {
-            allCapacityOptions[i].disabled = true;
-          }
-        }
-      }
-
-      for (i = 0; i < allCapacityOptions.length; i++) {
-        if (allCapacityOptions[i].disabled === false) {
-          allCapacityOptions[i].selected = true;
-          break;
-        }
-      }
-    }
-
-    function onChangeCapacity() {
-      turnOnCapacityOption(roomNumberToCapacity[inputRoomNumber.value]);
-    }
-
-    function resetForm() {
-      inputTitle.value = '';
-      inputAdress.value = '';
-      inputType.value = 'flat';
-      onChangeMinPrice();
-      inputPrice.value = '';
-      inputTimeIn.value = timeToAnotherTime['12:00'];
-      inputTimeOut.value = timeToAnotherTime['12:00'];
-      inputRoomNumber.value = '1';
-      turnOnCapacityOption([1]);
-      for (var i = 0; i < inputFeatures.length; i++) {
-        inputFeatures[i].checked = false;
-      }
-      inputDescription.value = '';
-    }
-
-    function fullReset() {
-      resetForm();
-      window.turnOffMap();
-      window.popup.onSuccessPopup();
-    }
-
-    function onSubmit(evt) {
-      evt.preventDefault();
-
-      window.backend.save(SAVE_URL, new FormData(form), fullReset, window.popup.onErrorPopup);
-    }
-
-    inputType.addEventListener('change', onChangeMinPrice);
-    form.addEventListener('change', onChangeTime);
-    inputRoomNumber.addEventListener('change', onChangeCapacity);
-    form.addEventListener('submit', onSubmit);
-
-    resetButton.addEventListener('click', fullReset);
+  function onChangeMinPrice() {
+    inputPrice.min = typeToMinPrice[inputType.value];
+    inputPrice.placeholder = typeToMinPrice[inputType.value];
   }
 
-  addFormChangeListeners(form);
+  function changeTime(firstTime, secondTime) {
+    secondTime.value = timeToAnotherTime[firstTime.value];
+  }
+
+  function onChangeTime(evt) {
+    if (evt.target.closest('#timein')) {
+      changeTime(inputTimeIn, inputTimeOut);
+    }
+
+    if (evt.target.closest('#timeout')) {
+      changeTime(inputTimeOut, inputTimeIn);
+    }
+  }
+
+  function turnOnCapacityOption(allIncludedValues) {
+    for (var i = 0; i < allCapacityOptions.length; i++) {
+      for (var j = 0; j < allIncludedValues.length; j++) {
+        if (parseInt(allCapacityOptions[i].value, 10) === allIncludedValues[j]) {
+          allCapacityOptions[i].disabled = false;
+          break;
+        } else {
+          allCapacityOptions[i].disabled = true;
+        }
+      }
+    }
+
+    for (i = 0; i < allCapacityOptions.length; i++) {
+      if (allCapacityOptions[i].disabled === false) {
+        allCapacityOptions[i].selected = true;
+        break;
+      }
+    }
+  }
+
+  function onChangeCapacity() {
+    turnOnCapacityOption(roomNumberToCapacity[inputRoomNumber.value]);
+  }
+
+  function resetForm() {
+    inputTitle.value = '';
+    inputAdress.value = '';
+    inputType.value = 'flat';
+    onChangeMinPrice();
+    inputPrice.value = '';
+    inputTimeIn.value = timeToAnotherTime['12:00'];
+    inputTimeOut.value = timeToAnotherTime['12:00'];
+    inputRoomNumber.value = '1';
+    turnOnCapacityOption([1]);
+    for (var i = 0; i < inputFeatures.length; i++) {
+      inputFeatures[i].checked = false;
+    }
+    inputDescription.value = '';
+  }
+
+  function fullReset() {
+    resetForm();
+    window.turnOffMap();
+    window.popup.onSuccessPopup();
+  }
+
+  function onSubmit(evt) {
+    evt.preventDefault();
+
+    window.backend.save(SAVE_URL, new FormData(form), fullReset, window.popup.onErrorPopup);
+  }
+
+  inputType.addEventListener('change', onChangeMinPrice);
+  form.addEventListener('change', onChangeTime);
+  inputRoomNumber.addEventListener('change', onChangeCapacity);
+  form.addEventListener('submit', onSubmit);
+
+  resetButton.addEventListener('click', fullReset);
 
   window.form = {
     turnOnForm: turnOnForm,
     turnOffForm: turnOffForm,
-    setAdress: setAdress,
-    addFormChangeListeners: addFormChangeListeners
+    setAdress: setAdress
   };
 })();
