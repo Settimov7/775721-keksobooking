@@ -73,7 +73,7 @@
     turnOffElements(mapFilter.querySelectorAll('fieldset'));
 
     window.card.removeMapCard(map);
-    mapPins = window.pin.removeMapPins(mapPins);
+    window.pin.removeMapPins(mapPins);
     resetMainPin();
   }
 
