@@ -152,7 +152,7 @@
   function onFilterChanged(evt) {
     evt.preventDefault();
 
-    window.pin.updateMapPins(map, window.filterAnnouncements(mapFilter, AllAnnouncements));
+    window.pin.updateMapPins(map, mapPins, window.filterAnnouncements(mapFilter, AllAnnouncements));
   }
 
   mainPin.addEventListener('mousedown', dragMainPin);
