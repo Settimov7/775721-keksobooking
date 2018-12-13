@@ -2,6 +2,8 @@
 
 (function () {
   var ACTIVE_CLASS_NAME = 'map__pin--active';
+  var USER_MAP_PINS_CLASS_NAME = 'map__user-pins-container';
+  var MAX_PINS = 5;
 
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
@@ -23,11 +25,14 @@
 
   function generateMapPinsFragment(announcements) {
     var mapPinsFragment = document.createDocumentFragment();
+    var mapPinsContaier = document.createElement('div');
+    mapPinsContaier.classList.add(USER_MAP_PINS_CLASS_NAME);
 
-    for (var i = 0; i < announcements.length; i++) {
-      mapPinsFragment.appendChild(generateMapPin(announcements[i]));
+    for (var i = 0; (i < announcements.length && i < MAX_PINS); i++) {
+      mapPinsContaier.appendChild(generateMapPin(announcements[i]));
     }
 
+    mapPinsFragment.appendChild(mapPinsContaier);
     return mapPinsFragment;
   }
 
@@ -36,14 +41,10 @@
   }
 
   function removeMapPins(mapPinsList) {
-    if (mapPinsList) {
-      var mapPins = mapPinsList.querySelectorAll('.map__pin');
+    var mapPinsContaier = mapPinsList.querySelector('.' + USER_MAP_PINS_CLASS_NAME);
 
-      for (var i = 0; i < mapPins.length; i++) {
-        if (!mapPins[i].classList.contains('map__pin--main')) {
-          mapPinsList.removeChild(mapPins[i]);
-        }
-      }
+    if (mapPinsContaier) {
+      mapPinsList.removeChild(mapPinsContaier);
     }
   }
 
@@ -57,9 +58,16 @@
     mapPin.classList.add(ACTIVE_CLASS_NAME);
   }
 
+  function updateMapPins(map, mapPinsList, announcements) {
+    window.card.removeMapCard(map);
+    removeMapPins(mapPinsList);
+    showMapPins(announcements, mapPinsList);
+  }
+
   window.pin = {
     showMapPins: showMapPins,
     removeMapPins: removeMapPins,
+    updateMapPins: updateMapPins,
     activate: activate
   };
 })();

@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  var STATUS_CODES = {
-    ok: 200
+  var StatusCode = {
+    OK: 200
   };
   var TIMEOUT = 10000;
   var RESPONSE_TYPE = 'json';
@@ -12,7 +12,7 @@
     xhr.responseType = RESPONSE_TYPE;
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === STATUS_CODES.ok) {
+      if (xhr.status === StatusCode.OK) {
         onLoad(xhr.response);
       } else {
         onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
@@ -37,7 +37,7 @@
     xhr.responseType = RESPONSE_TYPE;
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === STATUS_CODES.ok) {
+      if (xhr.status === StatusCode.OK) {
         onLoad();
       } else {
         onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);

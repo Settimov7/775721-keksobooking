@@ -1,7 +1,10 @@
 'use strict';
 
 (function () {
-  var OFFER_TYPES = {
+  var FEATURES_ELEMENT_CLASS_NAME = '.popup__features';
+  var PHOTOS_ELEMENT_CLASS_NAME = '.popup__photos';
+
+  var typeToText = {
     flat: 'Квартира',
     bungalo: 'Бунгало',
     house: 'Дом',
@@ -18,31 +21,7 @@
   }
 
   function generateOfferType(typeElement, type) {
-    switch (type) {
-      case 'flat': {
-        typeElement.textContent = OFFER_TYPES.flat;
-        break;
-      }
-
-      case 'bungalo': {
-        typeElement.textContent = OFFER_TYPES.bungalo;
-        break;
-      }
-
-      case 'house': {
-        typeElement.textContent = OFFER_TYPES.house;
-        break;
-      }
-
-      case 'palace': {
-        typeElement.textContent = OFFER_TYPES.palace;
-        break;
-      }
-
-      default: {
-        typeElement.textContent = OFFER_TYPES.unknown;
-      }
-    }
+    typeElement.textContent = typeToText[type];
   }
 
   function generateCapacity(element, rooms, guests) {
@@ -58,19 +37,17 @@
   }
 
   function generateFeatures(card, features) {
-    var FEATURES_ELEMENT_CLASS_NAME = '.popup__features';
-
     var featuresElement = card.querySelector(FEATURES_ELEMENT_CLASS_NAME);
 
     if (features.length) {
       var featuresElementsList = mapCardTemplate.querySelector(FEATURES_ELEMENT_CLASS_NAME).cloneNode(false);
 
-      for (var i = 0; i < features.length; i++) {
+      features.forEach(function (feature) {
         var featureElement = document.createElement('li');
         featureElement.classList.add('popup__feature');
-        featureElement.classList.add('popup__feature--' + features[i]);
+        featureElement.classList.add('popup__feature--' + feature);
         featuresElementsList.appendChild(featureElement);
-      }
+      });
 
       card.replaceChild(featuresElementsList, featuresElement);
     } else {
@@ -79,18 +56,16 @@
   }
 
   function generatePhotos(card, photos) {
-    var PHOTOS_ELEMENT_CLASS_NAME = '.popup__photos';
-
     var photosElement = card.querySelector(PHOTOS_ELEMENT_CLASS_NAME);
 
     if (photos.length) {
       var phototosElementList = mapCardTemplate.querySelector(PHOTOS_ELEMENT_CLASS_NAME).cloneNode(false);
 
-      for (var i = 0; i < photos.length; i++) {
+      photos.forEach(function (photo) {
         var photoElement = mapCardTemplate.querySelector('.popup__photo').cloneNode(false);
-        photoElement.src = photos[i];
+        photoElement.src = photo;
         phototosElementList.appendChild(photoElement);
-      }
+      });
 
       card.replaceChild(phototosElementList, photosElement);
     } else {
