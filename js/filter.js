@@ -49,11 +49,7 @@
       }
     }
 
-    if (numberMatches === checkedFeatures.length) {
-      return true;
-    } else {
-      return false;
-    }
+    return numberMatches === checkedFeatures.length;
   }
 
   function filterAnnouncements(announcements) {
