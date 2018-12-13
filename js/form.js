@@ -21,21 +21,37 @@
     '3': [1, 2, 3],
     '100': [0]
   };
+  var DISABLE_CLASS_NAME = 'ad-form--disabled';
 
-  function addFormChangeListeners(form) {
-    var inputTitle = form.querySelector('#title');
-    var inputAdress = form.querySelector('#address');
-    var inputType = form.querySelector('#type');
-    var inputPrice = form.querySelector('#price');
-    var inputTimeIn = form.querySelector('#timein');
-    var inputTimeOut = form.querySelector('#timeout');
-    var inputRoomNumber = form.querySelector('#room_number');
-    var inputCapacity = form.querySelector('#capacity');
-    var allCapacityOptions = inputCapacity.querySelectorAll('option');
-    var inputFeatures = form.querySelectorAll('.feature__checkbox');
-    var inputDescription = form.querySelector('#description');
-    var resetButton = form.querySelector('.ad-form__reset');
+  var form = document.querySelector('.ad-form');
+  var inputTitle = form.querySelector('#title');
+  var inputAdress = form.querySelector('#address');
+  var inputType = form.querySelector('#type');
+  var inputPrice = form.querySelector('#price');
+  var inputTimeIn = form.querySelector('#timein');
+  var inputTimeOut = form.querySelector('#timeout');
+  var inputRoomNumber = form.querySelector('#room_number');
+  var inputCapacity = form.querySelector('#capacity');
+  var allCapacityOptions = inputCapacity.querySelectorAll('option');
+  var inputFeatures = form.querySelectorAll('.feature__checkbox');
+  var inputDescription = form.querySelector('#description');
+  var resetButton = form.querySelector('.ad-form__reset');
 
+  function turnOnForm() {
+    window.util.showElement(form, DISABLE_CLASS_NAME);
+    window.util.turnOnElements(form.querySelectorAll('fieldset'));
+  }
+
+  function turnOffForm() {
+    window.util.disableElement(form, DISABLE_CLASS_NAME);
+    window.util.turnOffElements(form.querySelectorAll('fieldset'));
+  }
+
+  function setAdress(value) {
+    form.querySelector('#address').value = value;
+  }
+
+  function addFormChangeListeners() {
     function onChangeMinPrice() {
       inputPrice.min = typeToMinPrice[inputType.value];
       inputPrice.placeholder = typeToMinPrice[inputType.value];
@@ -85,8 +101,8 @@
       inputType.value = 'flat';
       onChangeMinPrice();
       inputPrice.value = '';
-      inputTimeIn.value = timeToAnotherTime[0];
-      inputTimeOut.value = timeToAnotherTime[0];
+      inputTimeIn.value = timeToAnotherTime['12:00'];
+      inputTimeOut.value = timeToAnotherTime['12:00'];
       inputRoomNumber.value = '1';
       turnOnCapacityOption([1]);
       for (var i = 0; i < inputFeatures.length; i++) {
@@ -115,5 +131,12 @@
     resetButton.addEventListener('click', fullReset);
   }
 
-  window.addFormChangeListeners = addFormChangeListeners;
+  addFormChangeListeners(form);
+
+  window.form = {
+    turnOnForm: turnOnForm,
+    turnOffForm: turnOffForm,
+    setAdress: setAdress,
+    addFormChangeListeners: addFormChangeListeners
+  };
 })();

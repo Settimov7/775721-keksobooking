@@ -6,6 +6,38 @@
     HIGH: 50000
   };
 
+  var STANDART_VALUE = 'any';
+
+  var filter = document.querySelector('.map__filters');
+  var typeField = filter.querySelector('#housing-type');
+  var priceField = filter.querySelector('#housing-price');
+  var roomsField = filter.querySelector('#housing-rooms');
+  var guestsField = filter.querySelector('#housing-guests');
+  var features = filter.querySelector('#housing-features');
+  var featuresCheckboxes = features.querySelectorAll('.map__checkbox');
+
+  function turnOnFilter() {
+    window.util.turnOnElements(filter.querySelectorAll('select'));
+    window.util.turnOnElements(filter.querySelectorAll('fieldset'));
+  }
+
+  function resetFilter() {
+    typeField.value = STANDART_VALUE;
+    priceField.value = STANDART_VALUE;
+    roomsField.value = STANDART_VALUE;
+    guestsField.value = STANDART_VALUE;
+
+    for (var i = 0; i < featuresCheckboxes.length; i++) {
+      featuresCheckboxes[i].checked = false;
+    }
+  }
+
+  function turnOffFilter() {
+    resetFilter();
+    window.util.turnOffElements(filter.querySelectorAll('select'));
+    window.util.turnOffElements(filter.querySelectorAll('fieldset'));
+  }
+
   function compareFeatures(announcement, checkedFeatures) {
     var numberMatches = 0;
 
@@ -24,16 +56,16 @@
     }
   }
 
-  function filterAnnouncements(filter, announcements) {
-    var typeValue = filter.querySelector('#housing-type').value;
-    var priceValue = filter.querySelector('#housing-price').value;
-    var roomsValue = filter.querySelector('#housing-rooms').value;
-    var guestsValue = filter.querySelector('#housing-guests').value;
-    var checkedFeatures = filter.querySelectorAll('.map__checkbox:checked');
+  function filterAnnouncements(announcements) {
+    var typeValue = typeField.value;
+    var priceValue = priceField.value;
+    var roomsValue = roomsField.value;
+    var guestsValue = guestsField.value;
+    var checkedFeatures = features.querySelectorAll('.map__checkbox:checked');
 
     var filteredAnnouncements = announcements
       .filter(function (announcement) {
-        return (announcement.offer.type === typeValue || typeValue === 'any');
+        return (announcement.offer.type === typeValue || typeValue === STANDART_VALUE);
       })
       .filter(function (announcement) {
         if (priceValue === 'any') {
@@ -55,10 +87,10 @@
         return false;
       })
       .filter(function (announcement) {
-        return (announcement.offer.rooms === parseInt(roomsValue, 10) || roomsValue === 'any');
+        return (announcement.offer.rooms === parseInt(roomsValue, 10) || roomsValue === STANDART_VALUE);
       })
       .filter(function (announcement) {
-        return (announcement.offer.guests === parseInt(guestsValue, 10) || guestsValue === 'any');
+        return (announcement.offer.guests === parseInt(guestsValue, 10) || guestsValue === STANDART_VALUE);
       })
       .filter(function (announcement) {
         return compareFeatures(announcement, checkedFeatures);
@@ -67,5 +99,10 @@
     return filteredAnnouncements;
   }
 
-  window.filterAnnouncements = filterAnnouncements;
+  window.filter = {
+    filterElement: filter,
+    turnOnFilter: turnOnFilter,
+    turnOffFilter: turnOffFilter,
+    filterAnnouncements: filterAnnouncements
+  };
 })();
