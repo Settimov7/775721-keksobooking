@@ -32,9 +32,9 @@
   }
 
   function turnOnElements(elements) {
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].disabled = false;
-    }
+    elements.forEach(function (element) {
+      element.disabled = false;
+    });
   }
 
   function onLoad(announcements) {
@@ -53,9 +53,9 @@
   }
 
   function turnOffElements(elements) {
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].disabled = true;
-    }
+    elements.forEach(function (element) {
+      element.disabled = true;
+    });
   }
 
   function resetMainPin() {
@@ -73,7 +73,7 @@
     turnOffElements(mapFilter.querySelectorAll('fieldset'));
 
     window.card.removeMapCard(map);
-    mapPins = window.pin.removeMapPins(map);
+    mapPins = window.pin.removeMapPins(mapPins);
     resetMainPin();
   }
 

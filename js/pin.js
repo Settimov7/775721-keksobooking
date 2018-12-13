@@ -2,8 +2,8 @@
 
 (function () {
   var ACTIVE_CLASS_NAME = 'map__pin--active';
-  var MAX_PINS = 5;
   var USER_MAP_PINS_CLASS_NAME = 'map__user-pins-container';
+  var MAX_PINS = 5;
 
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
@@ -41,7 +41,11 @@
   }
 
   function removeMapPins(mapPinsList) {
-    mapPinsList.removeChild(mapPinsList.querySelector('.' + USER_MAP_PINS_CLASS_NAME));
+    var mapPinsContaier = mapPinsList.querySelector('.' + USER_MAP_PINS_CLASS_NAME);
+
+    if (mapPinsContaier) {
+      mapPinsList.removeChild(mapPinsContaier);
+    }
   }
 
   function activate(mapPin) {

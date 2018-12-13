@@ -2,14 +2,25 @@
 
 (function () {
   var SAVE_URL = 'https://js.dump.academy/keksobooking';
-  var MIN_PRICE = {
+  var typeToMinPrice = {
     bungalo: 0,
     flat: 1000,
     house: 5000,
     palace: 10000
   };
 
-  var TIME_VALUES = ['12:00', '13:00', '14:00'];
+  var timeToAnotherTime = {
+    '12:00': '12:00',
+    '13:00': '13:00',
+    '14:00': '14:00'
+  };
+
+  var roomNumberToCapacity = {
+    '1': [1],
+    '2': [1, 2],
+    '3': [1, 2, 3],
+    '100': [0]
+  };
 
   function addFormChangeListeners(form) {
     var inputTitle = form.querySelector('#title');
@@ -26,58 +37,12 @@
     var resetButton = form.querySelector('.ad-form__reset');
 
     function onChangeMinPrice() {
-      switch (inputType.value) {
-        case 'bungalo': {
-          inputPrice.min = MIN_PRICE.bungalo;
-          inputPrice.placeholder = MIN_PRICE.bungalo;
-          break;
-        }
-
-        case 'flat': {
-          inputPrice.min = MIN_PRICE.flat;
-          inputPrice.placeholder = MIN_PRICE.flat;
-          break;
-        }
-
-        case 'house': {
-          inputPrice.min = MIN_PRICE.house;
-          inputPrice.placeholder = MIN_PRICE.house;
-          break;
-        }
-
-        case 'palace': {
-          inputPrice.min = MIN_PRICE.palace;
-          inputPrice.placeholder = MIN_PRICE.palace;
-          break;
-        }
-
-        default: {
-          break;
-        }
-      }
+      inputPrice.min = typeToMinPrice[inputType.value];
+      inputPrice.placeholder = typeToMinPrice[inputType.value];
     }
 
     function changeTime(firstTime, secondTime) {
-      switch (firstTime.value) {
-        case TIME_VALUES[0]: {
-          secondTime.value = TIME_VALUES[0];
-          break;
-        }
-
-        case TIME_VALUES[1]: {
-          secondTime.value = TIME_VALUES[1];
-          break;
-        }
-
-        case TIME_VALUES[2]: {
-          secondTime.value = TIME_VALUES[2];
-          break;
-        }
-
-        default: {
-          break;
-        }
-      }
+      secondTime.value = timeToAnotherTime[firstTime.value];
     }
 
     function onChangeTime(evt) {
@@ -111,35 +76,7 @@
     }
 
     function onChangeCapacity() {
-      var allIncludedCapacityOptionsValues = [];
-
-      switch (inputRoomNumber.value) {
-        case '1': {
-          allIncludedCapacityOptionsValues.push(1);
-          break;
-        }
-
-        case '2': {
-          allIncludedCapacityOptionsValues.push(1, 2);
-          break;
-        }
-
-        case '3': {
-          allIncludedCapacityOptionsValues.push(1, 2, 3);
-          break;
-        }
-
-        case '100': {
-          allIncludedCapacityOptionsValues.push(0);
-          break;
-        }
-
-        default: {
-          break;
-        }
-      }
-
-      turnOnCapacityOption(allIncludedCapacityOptionsValues);
+      turnOnCapacityOption(roomNumberToCapacity[inputRoomNumber.value]);
     }
 
     function resetForm() {
@@ -148,8 +85,8 @@
       inputType.value = 'flat';
       onChangeMinPrice();
       inputPrice.value = '';
-      inputTimeIn.value = TIME_VALUES[0];
-      inputTimeOut.value = TIME_VALUES[0];
+      inputTimeIn.value = timeToAnotherTime[0];
+      inputTimeOut.value = timeToAnotherTime[0];
       inputRoomNumber.value = '1';
       turnOnCapacityOption([1]);
       for (var i = 0; i < inputFeatures.length; i++) {
