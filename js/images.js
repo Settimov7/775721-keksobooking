@@ -127,9 +127,45 @@
     photosDropBox.style.borderColor = DropBoxColors.DEFAULT;
   }
 
+  function startDrag(evt) {
+    evt.preventDefault();
+
+    var dragPhoto = evt.target.closest('.ad-form__photo');
+
+    function onMouseEnter(enterEvt) {
+      enterEvt.preventDefault();
+
+      var target = enterEvt.target.closest('.ad-form__photo');
+
+      if (target && target !== dragPhoto && target.firstChild) {
+        if (target.nextSibling === dragPhoto) {
+          photosContainer.insertBefore(dragPhoto, target);
+        } else {
+          photosContainer.insertBefore(dragPhoto, target.nextSibling);
+        }
+      }
+    }
+
+    function onMouseUp(downEvt) {
+      downEvt.preventDefault();
+
+      dragPhoto.style.opacity = '1';
+      document.removeEventListener('mouseover', onMouseEnter);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    if (dragPhoto) {
+      dragPhoto.style.opacity = '0.5';
+
+      document.addEventListener('mouseover', onMouseEnter);
+      document.addEventListener('mouseup', onMouseUp);
+    }
+  }
+
   function addImagesHandlers() {
     addHandlers(avatarChooser, avatarDropBox, onAvatarChange, onAvatarDrop);
     addHandlers(photosChooser, photosDropBox, onPhotosChange, onPhotosDrop);
+    photosContainer.addEventListener('mousedown', startDrag);
   }
 
   function reset() {
