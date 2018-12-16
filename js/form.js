@@ -24,6 +24,7 @@
   var DISABLE_CLASS_NAME = 'ad-form--disabled';
 
   var form = document.querySelector('.ad-form');
+
   var inputTitle = form.querySelector('#title');
   var inputAdress = form.querySelector('#address');
   var inputType = form.querySelector('#type');
@@ -40,11 +41,13 @@
   function turnOnForm() {
     window.util.showElement(form, DISABLE_CLASS_NAME);
     window.util.turnOnElements(form.querySelectorAll('fieldset'));
+    window.images.addImagesHandlers();
   }
 
   function turnOffForm() {
     window.util.disableElement(form, DISABLE_CLASS_NAME);
     window.util.turnOffElements(form.querySelectorAll('fieldset'));
+    window.images.reset();
   }
 
   function setAdress(value) {
