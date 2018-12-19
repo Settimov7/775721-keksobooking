@@ -105,14 +105,14 @@
     function onMouseMove(moveEvt) {
       moveEvt.preventDefault();
 
-      var shift = new Coords(startCoords.getX - moveEvt.clientX, startCoords.getY - moveEvt.clientY);
+      var shift = new Coords(startCoords.getX() - moveEvt.clientX, startCoords.getY() - moveEvt.clientY);
 
       startCoords.setX(moveEvt.clientX);
       startCoords.setY(moveEvt.clientY);
 
       var newPosition = {
-        top: mainPin.offsetTop - shift.getY,
-        left: mainPin.offsetLeft - shift.getX
+        top: mainPin.offsetTop - shift.getY(),
+        left: mainPin.offsetLeft - shift.getX()
       };
 
       if (checkMainPinCoords(newPosition)) {
