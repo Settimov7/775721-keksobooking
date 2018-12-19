@@ -7,14 +7,14 @@
     var lastTimeout = null;
 
     function addTimeout() {
-      var parametrs = arguments;
+      var parameters = arguments;
 
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }
 
       lastTimeout = setTimeout(function () {
-        action.apply(null, parametrs);
+        action(parameters[0]);
       }, DEBOUNCE_INTERVAL);
     }
 

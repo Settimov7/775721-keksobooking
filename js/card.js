@@ -1,8 +1,21 @@
 'use strict';
 
 (function () {
-  var FEATURES_ELEMENT_CLASS_NAME = '.popup__features';
-  var PHOTOS_ELEMENT_CLASS_NAME = '.popup__photos';
+  var CardElementClassName = {
+    CARD: 'map__card',
+    TITLE: 'popup__title',
+    ADDRESS: 'popup__text--address',
+    PRICE: 'popup__text--price',
+    TYPE: 'popup__type',
+    CAPACITY: 'popup__text--capacity',
+    TIME: 'popup__text--time',
+    FEATURES: 'popup__features',
+    FEATURE: 'popup__feature',
+    PHOTOS: 'popup__photos',
+    PHOTO: 'popup__photo',
+    AVATAR: 'popup__avatar',
+    CLOSE: 'popup__close'
+  };
 
   var typeToText = {
     flat: 'Квартира',
@@ -12,7 +25,7 @@
     unknown: 'Неизвестно'
   };
 
-  var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var mapCardTemplate = document.querySelector('#card').content.querySelector('.' + CardElementClassName.CARD);
 
   function generateTextContent(element, text) {
     if (text) {
@@ -37,15 +50,15 @@
   }
 
   function generateFeatures(card, features) {
-    var featuresElement = card.querySelector(FEATURES_ELEMENT_CLASS_NAME);
+    var featuresElement = card.querySelector('.' + CardElementClassName.FEATURES);
 
     if (features.length) {
-      var featuresElementsList = mapCardTemplate.querySelector(FEATURES_ELEMENT_CLASS_NAME).cloneNode(false);
+      var featuresElementsList = mapCardTemplate.querySelector('.' + CardElementClassName.FEATURES).cloneNode(false);
 
       features.forEach(function (feature) {
         var featureElement = document.createElement('li');
-        featureElement.classList.add('popup__feature');
-        featureElement.classList.add('popup__feature--' + feature);
+        featureElement.classList.add(CardElementClassName.FEATURE);
+        featureElement.classList.add(CardElementClassName.FEATURE + '--' + feature);
         featuresElementsList.appendChild(featureElement);
       });
 
@@ -56,13 +69,13 @@
   }
 
   function generatePhotos(card, photos) {
-    var photosElement = card.querySelector(PHOTOS_ELEMENT_CLASS_NAME);
+    var photosElement = card.querySelector('.' + CardElementClassName.PHOTOS);
 
     if (photos.length) {
-      var phototosElementList = mapCardTemplate.querySelector(PHOTOS_ELEMENT_CLASS_NAME).cloneNode(false);
+      var phototosElementList = mapCardTemplate.querySelector('.' + CardElementClassName.PHOTOS).cloneNode(false);
 
       photos.forEach(function (photo) {
-        var photoElement = mapCardTemplate.querySelector('.popup__photo').cloneNode(false);
+        var photoElement = mapCardTemplate.querySelector('.' + CardElementClassName.PHOTO).cloneNode(false);
         photoElement.src = photo;
         phototosElementList.appendChild(photoElement);
       });
@@ -82,15 +95,15 @@
   function generateMapCard(announcement) {
     var mapCard = mapCardTemplate.cloneNode(true);
 
-    generateTextContent(mapCard.querySelector('.popup__title'), announcement.offer.title);
-    generateTextContent(mapCard.querySelector('.popup__text--address'), announcement.offer.address);
-    generateTextContent(mapCard.querySelector('.popup__text--price'), announcement.offer.price + '₽/ночь');
-    generateOfferType(mapCard.querySelector('.popup__type'), announcement.offer.type);
-    generateCapacity(mapCard.querySelector('.popup__text--capacity'), announcement.offer.rooms, announcement.offer.guests);
-    generateTime(mapCard.querySelector('.popup__text--time'), announcement.offer.checkin, announcement.offer.checkout);
+    generateTextContent(mapCard.querySelector('.' + CardElementClassName.TITLE), announcement.offer.title);
+    generateTextContent(mapCard.querySelector('.' + CardElementClassName.ADDRESS), announcement.offer.address);
+    generateTextContent(mapCard.querySelector('.' + CardElementClassName.PRICE), announcement.offer.price + '₽/ночь');
+    generateOfferType(mapCard.querySelector('.' + CardElementClassName.TYPE), announcement.offer.type);
+    generateCapacity(mapCard.querySelector('.' + CardElementClassName.CAPACITY), announcement.offer.rooms, announcement.offer.guests);
+    generateTime(mapCard.querySelector('.' + CardElementClassName.TIME), announcement.offer.checkin, announcement.offer.checkout);
     generateFeatures(mapCard, announcement.offer.features);
     generatePhotos(mapCard, announcement.offer.photos);
-    generateAvatar(mapCard.querySelector('.popup__avatar'), announcement.author.avatar);
+    generateAvatar(mapCard.querySelector('.' + CardElementClassName.AVATAR), announcement.author.avatar);
 
     return mapCard;
   }
@@ -105,7 +118,7 @@
   }
 
   function removeMapCard(map) {
-    var oldCard = map.querySelector('.map__card');
+    var oldCard = map.querySelector('.' + CardElementClassName.CARD);
 
     if (oldCard) {
       map.removeChild(oldCard);
@@ -123,7 +136,7 @@
     }
 
     map.insertBefore(newCard, map.querySelector('.map__filters-container'));
-    newCard.querySelector('.popup__close').addEventListener('click', function () {
+    newCard.querySelector('.' + CardElementClassName.CLOSE).addEventListener('click', function () {
       map.removeChild(newCard);
     });
   }

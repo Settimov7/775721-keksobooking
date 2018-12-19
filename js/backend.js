@@ -4,6 +4,7 @@
   var StatusCode = {
     OK: 200
   };
+
   var TIMEOUT = 10000;
   var RESPONSE_TYPE = 'json';
 

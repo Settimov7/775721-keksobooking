@@ -3,22 +3,14 @@
 (function () {
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
   var successTemplate = document.querySelector('#success').content.querySelector('.success');
+
   var main = document.querySelector('main');
+  var currentPopup;
 
   function closePopup() {
-    var successPopup = document.querySelector('.success');
-    var errorPopup = document.querySelector('.error');
-
     document.removeEventListener('keydown', onPopupEscPress);
     document.removeEventListener('click', onPopupClick);
-
-    if (successPopup) {
-      main.removeChild(successPopup);
-    }
-
-    if (errorPopup) {
-      main.removeChild(errorPopup);
-    }
+    main.removeChild(currentPopup);
   }
 
   function onPopupEscPress(evt) {
@@ -35,12 +27,17 @@
     document.addEventListener('keydown', onPopupEscPress);
     document.addEventListener('click', onPopupClick);
 
+    currentPopup = popup;
     main.appendChild(popup);
   }
 
   function onErrorPopup(errorMessage) {
     var error = errorTemplate.cloneNode(true);
+
     error.querySelector('.error__message').textContent = 'Ошибка загрузки объявления: ' + errorMessage;
+    error.querySelector('.error__button').addEventListener('click', function () {
+      window.map.turnOnMap();
+    });
 
     openPopup(error);
   }
