@@ -16,28 +16,6 @@
   var features = filter.querySelector('#housing-features');
   var featuresCheckboxes = features.querySelectorAll('.map__checkbox');
 
-  function turnOnFilter() {
-    window.util.turnOnElements(filter.querySelectorAll('select'));
-    window.util.turnOnElements(filter.querySelectorAll('fieldset'));
-  }
-
-  function resetFilter() {
-    typeField.value = STANDART_VALUE;
-    priceField.value = STANDART_VALUE;
-    roomsField.value = STANDART_VALUE;
-    guestsField.value = STANDART_VALUE;
-
-    for (var i = 0; i < featuresCheckboxes.length; i++) {
-      featuresCheckboxes[i].checked = false;
-    }
-  }
-
-  function turnOffFilter() {
-    resetFilter();
-    window.util.turnOffElements(filter.querySelectorAll('select'));
-    window.util.turnOffElements(filter.querySelectorAll('fieldset'));
-  }
-
   function compareFeatures(announcement, checkedFeatures) {
     var numberMatches = 0;
 
@@ -95,10 +73,41 @@
     return filteredAnnouncements;
   }
 
+  function addFilterChangeHandler(map, announcements) {
+    function onFilterChanged(evt) {
+      evt.preventDefault();
+      window.pin.updateMapPins(map, filterAnnouncements(announcements));
+    }
+
+    filter.addEventListener('change', window.debounce(onFilterChanged));
+  }
+
+  function turnOnFilter(map, announcements) {
+    window.util.turnOnElements(filter.querySelectorAll('select'));
+    window.util.turnOnElements(filter.querySelectorAll('fieldset'));
+
+    addFilterChangeHandler(map, announcements);
+  }
+
+  function resetFilter() {
+    typeField.value = STANDART_VALUE;
+    priceField.value = STANDART_VALUE;
+    roomsField.value = STANDART_VALUE;
+    guestsField.value = STANDART_VALUE;
+
+    for (var i = 0; i < featuresCheckboxes.length; i++) {
+      featuresCheckboxes[i].checked = false;
+    }
+  }
+
+  function turnOffFilter() {
+    resetFilter();
+    window.util.turnOffElements(filter.querySelectorAll('select'));
+    window.util.turnOffElements(filter.querySelectorAll('fieldset'));
+  }
+
   window.filter = {
-    filterElement: filter,
     turnOnFilter: turnOnFilter,
-    turnOffFilter: turnOffFilter,
-    filterAnnouncements: filterAnnouncements
+    turnOffFilter: turnOffFilter
   };
 })();
