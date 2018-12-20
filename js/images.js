@@ -1,20 +1,20 @@
 'use strict';
 
 (function () {
-  var IMAGE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var AVATAR_DEFAULT_IMAGE_URL = 'img/muffin-grey.svg';
+  var VALID_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var AVATAR_DEFAULT_URL = 'img/muffin-grey.svg';
 
   var DropBoxColor = {
     HOVER: '#ff5635',
     DEFAULT: '#c7c7c7'
   };
 
-  var ImageSize = {
+  var Size = {
     WIDTH: '100%',
     HEIGHT: '100%'
   };
 
-  var ImageOpacity = {
+  var Opacity = {
     ACTIVE: '0.5',
     DEFAULT: '1'
   };
@@ -44,18 +44,18 @@
 
   var dragPhoto;
 
-  function checkImagesType(images) {
+  function checkType(images) {
     return images.every(function (image) {
-      return IMAGE_TYPES.some(function (type) {
+      return VALID_TYPES.some(function (type) {
         return image.name.toLowerCase().endsWith(type);
       });
     });
   }
 
-  function previewImages(images, action) {
+  function addPreview(images, action) {
     var photos = [].slice.apply(images, null);
 
-    if (checkImagesType(photos)) {
+    if (checkType(photos)) {
       photos.forEach(function (photo) {
         var reader = new FileReader();
 
@@ -72,10 +72,10 @@
     avatarPreview.src = imageSrc;
   }
 
-  function onImageDragStart(evt) {
+  function onDragStart(evt) {
     dragPhoto = evt.target.closest('.' + PhotoElementClassName.PHOTO);
 
-    dragPhoto.style.opacity = ImageOpacity.ACTIVE;
+    dragPhoto.style.opacity = Opacity.ACTIVE;
 
     evt.dataTransfer.setData('text/html', dragPhoto.innerHTML);
   }
@@ -84,7 +84,7 @@
     return dragPhoto !== target.closest('.' + PhotoElementClassName.PHOTO);
   }
 
-  function onImageDragEnter(evt) {
+  function onDragEnter(evt) {
     evt.preventDefault();
 
     if (checkTarget(evt.target)) {
@@ -92,24 +92,24 @@
     }
   }
 
-  function onImageDragOver(evt) {
+  function onDragOver(evt) {
     evt.preventDefault();
   }
 
-  function onImageDragLeave(evt) {
+  function onDragLeave(evt) {
     evt.preventDefault();
 
     evt.target.style.border = 'none';
   }
 
-  function onImageDrop(evt) {
+  function onDrop(evt) {
     evt.preventDefault();
 
     var target = evt.target;
     var newPhoto = evt.target.closest('.' + PhotoElementClassName.PHOTO);
 
     if (checkTarget(evt.target)) {
-      dragPhoto.style.opacity = ImageOpacity.DEFAULT;
+      dragPhoto.style.opacity = Opacity.DEFAULT;
       target.style.border = 'none';
 
       dragPhoto.innerHTML = newPhoto.innerHTML;
@@ -117,21 +117,21 @@
     }
   }
 
-  function onImageDragEnd(evt) {
+  function onDragEnd(evt) {
     evt.preventDefault();
 
-    dragPhoto.style.opacity = ImageOpacity.DEFAULT;
+    dragPhoto.style.opacity = Opacity.DEFAULT;
   }
 
   function addPhotoDragHandles(element) {
     element.draggable = true;
 
-    element.addEventListener('dragstart', onImageDragStart);
-    element.addEventListener('dragenter', onImageDragEnter);
-    element.addEventListener('dragover', onImageDragOver);
-    element.addEventListener('dragleave', onImageDragLeave);
-    element.addEventListener('drop', onImageDrop);
-    element.addEventListener('dragend', onImageDragEnd);
+    element.addEventListener('dragstart', onDragStart);
+    element.addEventListener('dragenter', onDragEnter);
+    element.addEventListener('dragover', onDragOver);
+    element.addEventListener('dragleave', onDragLeave);
+    element.addEventListener('drop', onDrop);
+    element.addEventListener('dragend', onDragEnd);
   }
 
   function generatePhotoPreview(imageSrc) {
@@ -141,8 +141,8 @@
     addPhotoDragHandles(photoElement);
 
     var imageElement = document.createElement('img');
-    imageElement.style.width = ImageSize.WIDTH;
-    imageElement.style.height = ImageSize.HEIGHT;
+    imageElement.style.width = Size.WIDTH;
+    imageElement.style.height = Size.HEIGHT;
     imageElement.src = imageSrc;
 
     photoElement.appendChild(imageElement);
@@ -154,11 +154,11 @@
     var target = evt.target;
 
     if (target.classList.contains(AvatarElementClassName.FILE_CHOOSER)) {
-      previewImages(avatarChooser.files, generateAvatarPreview);
+      addPreview(avatarChooser.files, generateAvatarPreview);
     }
 
     if (target.classList.contains(PhotoElementClassName.FILE_CHOOSER)) {
-      previewImages(photosChooser.files, generatePhotoPreview);
+      addPreview(photosChooser.files, generatePhotoPreview);
     }
   }
 
@@ -191,17 +191,17 @@
     var target = evt.target;
 
     if (target.classList.contains(AvatarElementClassName.DROP_BOX)) {
-      previewImages(evt.dataTransfer.files, generateAvatarPreview);
+      addPreview(evt.dataTransfer.files, generateAvatarPreview);
       avatarDropBox.style.borderColor = DropBoxColor.DEFAULT;
     }
 
     if (target.classList.contains(PhotoElementClassName.DROP_BOX)) {
-      previewImages(evt.dataTransfer.files, generatePhotoPreview);
+      addPreview(evt.dataTransfer.files, generatePhotoPreview);
       photosDropBox.style.borderColor = DropBoxColor.DEFAULT;
     }
   }
 
-  function addHandlers(fileChooser, dropBox) {
+  function addHandlersToElement(fileChooser, dropBox) {
     fileChooser.addEventListener('change', onFileChange);
     dropBox.addEventListener('dragenter', onFileDragEnter);
     dropBox.addEventListener('dragover', onFileDragOver);
@@ -209,23 +209,23 @@
     dropBox.addEventListener('drop', onFileDrop);
   }
 
-  function addImagesHandlers() {
-    addHandlers(avatarChooser, avatarDropBox);
-    addHandlers(photosChooser, photosDropBox);
+  function addHandlers() {
+    addHandlersToElement(avatarChooser, avatarDropBox);
+    addHandlersToElement(photosChooser, photosDropBox);
   }
 
-  function resetImages() {
+  function reset() {
     var photos = photosContainer.querySelectorAll('.' + PhotoElementClassName.PHOTO);
 
     for (var i = 1; i < photos.length; i++) {
       photosContainer.removeChild(photos[i]);
     }
 
-    avatarPreview.src = AVATAR_DEFAULT_IMAGE_URL;
+    avatarPreview.src = AVATAR_DEFAULT_URL;
   }
 
   window.images = {
-    addImagesHandlers: addImagesHandlers,
-    resetImages: resetImages
+    addHandlers: addHandlers,
+    reset: reset
   };
 })();

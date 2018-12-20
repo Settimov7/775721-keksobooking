@@ -7,41 +7,44 @@
   var map = document.querySelector('.map');
 
   function onLoad(data) {
-    window.pin.showMapPins(map, data);
-    window.filter.turnOnFilter(map, data);
+    window.pin.show(map, data);
+    window.filter.turnOn(map, data);
   }
 
-  function turnOnMap() {
+  function onError(errorMessage) {
+    window.popup.showError(errorMessage, turnOn);
+  }
+
+  function turnOn() {
+    window.backend.load(DATA_URL, onLoad, onError);
+
     window.util.showElement(map, HIDDEN_CLASS_NAME);
-    window.form.turnOnForm();
-
-    window.backend.load(DATA_URL, onLoad, window.popup.onErrorPopup);
+    window.form.turnOn();
   }
 
-  function turnOffMap() {
+  function turnOff() {
     window.util.disableElement(map, HIDDEN_CLASS_NAME);
-    window.filter.turnOffFilter();
-    window.form.turnOffForm();
-
-    window.card.removeMapCard(map);
-    window.pin.removeMapPins();
-    window.pin.resetMainPin();
+    window.filter.turnOff();
+    window.form.turnOff();
+    window.card.remove();
+    window.pin.remove();
+    window.pin.reset();
   }
 
-  function checkStatusMap() {
+  function checkStatus() {
     return map.classList.contains(HIDDEN_CLASS_NAME);
   }
 
-  function getMapBoundingRect() {
+  function getBoundingRect() {
     return map.getBoundingClientRect();
   }
 
-  window.pin.addDragMainPin();
+  window.pin.addDrag();
 
   window.map = {
-    checkStatusMap: checkStatusMap,
-    getMapBoundingRect: getMapBoundingRect,
-    turnOnMap: turnOnMap,
-    turnOffMap: turnOffMap
+    checkStatus: checkStatus,
+    getBoundingRect: getBoundingRect,
+    turnOn: turnOn,
+    turnOff: turnOff
   };
 })();
