@@ -73,23 +73,23 @@
     return filteredAnnouncements;
   }
 
-  function addFilterChangeHandler(map, announcements) {
+  function addChangeHandler(map, announcements) {
     function onFilterChanged(evt) {
       evt.preventDefault();
-      window.pin.updateMapPins(map, filterAnnouncements(announcements));
+      window.pin.update(map, filterAnnouncements(announcements));
     }
 
     filter.addEventListener('change', window.debounce(onFilterChanged));
   }
 
-  function turnOnFilter(map, announcements) {
+  function turnOn(map, announcements) {
     window.util.turnOnElements(filter.querySelectorAll('select'));
     window.util.turnOnElements(filter.querySelectorAll('fieldset'));
 
-    addFilterChangeHandler(map, announcements);
+    addChangeHandler(map, announcements);
   }
 
-  function resetFilter() {
+  function reset() {
     typeField.value = STANDART_VALUE;
     priceField.value = STANDART_VALUE;
     roomsField.value = STANDART_VALUE;
@@ -100,14 +100,14 @@
     }
   }
 
-  function turnOffFilter() {
-    resetFilter();
+  function turnOff() {
+    reset();
     window.util.turnOffElements(filter.querySelectorAll('select'));
     window.util.turnOffElements(filter.querySelectorAll('fieldset'));
   }
 
   window.filter = {
-    turnOnFilter: turnOnFilter,
-    turnOffFilter: turnOffFilter
+    turnOn: turnOn,
+    turnOff: turnOff
   };
 })();
