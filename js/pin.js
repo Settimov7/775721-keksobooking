@@ -89,7 +89,7 @@
   }
 
   function checkMainPinCoords(newPosition) {
-    return (newPosition.top >= MainPinData.MIN_Y && newPosition.top <= MainPinData.MAX_Y - MainPinData.HEIGHT &&
+    return (newPosition.top >= (MainPinData.MIN_Y - MainPinData.HEIGHT) && newPosition.top <= MainPinData.MAX_Y - MainPinData.HEIGHT &&
             newPosition.left >= 0 && newPosition.left <= (window.map.getMapBoundingRect().right - window.map.getMapBoundingRect().left) - getElementWidth(mainPin));
   }
 
