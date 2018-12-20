@@ -1,9 +1,9 @@
 'use strict';
 
 (function () {
-  var MAX_PINS = 5;
+  var MAX_QUANTITY = 5;
 
-  var MainPinData = {
+  var Data = {
     HEIGHT: 84,
     START_LEFT: 570,
     START_TOP: 375,
@@ -11,7 +11,7 @@
     MAX_Y: 630
   };
 
-  var PinClassName = {
+  var ClassName = {
     PIN: 'map__pin',
     MAIN_PIN: 'map__pin--main',
     ACTIVE: 'map__pin--active',
@@ -43,16 +43,16 @@
   };
 
 
-  var mapPinTemplate = document.querySelector('#pin').content.querySelector('.' + PinClassName.PIN);
-  var mapPinsList = document.querySelector('.' + PinClassName.LIST);
-  var mainPin = mapPinsList.querySelector('.' + PinClassName.MAIN_PIN);
+  var template = document.querySelector('#pin').content.querySelector('.' + ClassName.PIN);
+  var list = document.querySelector('.' + ClassName.LIST);
+  var main = list.querySelector('.' + ClassName.MAIN_PIN);
 
   function checkAnnoucement(announcement) {
     return (announcement.location.x && announcement.location.y && announcement.author.avatar && announcement.offer.description);
   }
 
-  function generateMapPin(announcement) {
-    var mapPin = mapPinTemplate.cloneNode(true);
+  function generatePin(announcement) {
+    var mapPin = template.cloneNode(true);
 
     if (checkAnnoucement(announcement)) {
       mapPin.style.left = announcement.location.x - mapPin.offsetWidth / 2 + 'px';
@@ -64,14 +64,14 @@
     return mapPin;
   }
 
-  function generateMapPinsFragment(announcements) {
+  function generatePinsFragment(announcements) {
     var mapPinsFragment = document.createDocumentFragment();
     var mapPinsContaier = document.createElement('div');
 
-    mapPinsContaier.classList.add(PinClassName.USER_CONTAINER);
+    mapPinsContaier.classList.add(ClassName.USER_CONTAINER);
 
-    for (var i = 0; (i < announcements.length && i < MAX_PINS); i++) {
-      mapPinsContaier.appendChild(generateMapPin(announcements[i]));
+    for (var i = 0; (i < announcements.length && i < MAX_QUANTITY); i++) {
+      mapPinsContaier.appendChild(generatePin(announcements[i]));
     }
 
     mapPinsFragment.appendChild(mapPinsContaier);
@@ -84,22 +84,22 @@
   }
 
   function getCurrentAddress() {
-    return Math.round(mainPin.getBoundingClientRect().left + pageXOffset + getElementWidth(mainPin) / 2 - window.map.getMapBoundingRect().left).toString()
-            + ', ' + (mainPin.getBoundingClientRect().top + pageYOffset + MainPinData.HEIGHT).toString();
+    return Math.round(main.getBoundingClientRect().left + pageXOffset + getElementWidth(main) / 2 - window.map.getBoundingRect().left).toString()
+            + ', ' + (main.getBoundingClientRect().top + pageYOffset + Data.HEIGHT).toString();
   }
 
-  function checkMainPinCoords(newPosition) {
-    return (newPosition.top >= (MainPinData.MIN_Y - MainPinData.HEIGHT) && newPosition.top <= MainPinData.MAX_Y - MainPinData.HEIGHT &&
-            newPosition.left >= 0 && newPosition.left <= (window.map.getMapBoundingRect().right - window.map.getMapBoundingRect().left) - getElementWidth(mainPin));
+  function checkCoords(newPosition) {
+    return (newPosition.top >= (Data.MIN_Y - Data.HEIGHT) && newPosition.top <= Data.MAX_Y - Data.HEIGHT &&
+            newPosition.left >= 0 && newPosition.left <= (window.map.getBoundingRect().right - window.map.getBoundingRect().left) - getElementWidth(main));
   }
 
-  function dragMainPin(evt) {
+  function startDrag(evt) {
     evt.preventDefault();
 
     var startCoords = new Coords(evt.clientX, evt.clientY);
 
-    if (window.map.checkStatusMap()) {
-      window.map.turnOnMap();
+    if (window.map.checkStatus()) {
+      window.map.turnOn();
     }
 
     function onMouseMove(moveEvt) {
@@ -111,14 +111,14 @@
       startCoords.setY(moveEvt.clientY);
 
       var newPosition = {
-        top: mainPin.offsetTop - shift.getY(),
-        left: mainPin.offsetLeft - shift.getX()
+        top: main.offsetTop - shift.getY(),
+        left: main.offsetLeft - shift.getX()
       };
 
-      if (checkMainPinCoords(newPosition)) {
+      if (checkCoords(newPosition)) {
         window.form.setAdress(getCurrentAddress());
-        mainPin.style.top = newPosition.top + 'px';
-        mainPin.style.left = newPosition.left + 'px';
+        main.style.top = newPosition.top + 'px';
+        main.style.left = newPosition.left + 'px';
       }
     }
 
@@ -134,67 +134,67 @@
     document.addEventListener('mouseup', onMouseUp);
   }
 
-  function addDragMainPin() {
-    mainPin.addEventListener('mousedown', dragMainPin);
+  function addDrag() {
+    main.addEventListener('mousedown', startDrag);
   }
 
-  function addPinClickHandler(map, announcements) {
+  function addClickHandler(map, announcements) {
     function onMapPinClick(evt) {
       var target = evt.target;
-      var parentElement = target.closest('.' + PinClassName.PIN);
+      var parentElement = target.closest('.' + ClassName.PIN);
 
-      if (announcements && parentElement && !parentElement.classList.contains(PinClassName.MAIN_PIN)) {
+      if (announcements && parentElement && !parentElement.classList.contains(ClassName.MAIN_PIN)) {
         evt.preventDefault();
 
-        activateMapPin(parentElement);
-        window.card.changeMapCard(map, parentElement, announcements);
+        activate(parentElement);
+        window.card.change(map, parentElement, announcements);
       }
     }
 
     map.addEventListener('click', onMapPinClick);
   }
 
-  function showMapPins(map, announcements) {
-    mapPinsList.appendChild(generateMapPinsFragment(announcements));
-    addPinClickHandler(map, announcements);
+  function show(map, announcements) {
+    list.appendChild(generatePinsFragment(announcements));
+    addClickHandler(map, announcements);
   }
 
-  function removeMapPins() {
-    var mapPinsContaier = mapPinsList.querySelector('.' + PinClassName.USER_CONTAINER);
+  function remove() {
+    var mapPinsContaier = list.querySelector('.' + ClassName.USER_CONTAINER);
 
     if (mapPinsContaier) {
-      mapPinsList.removeChild(mapPinsContaier);
+      list.removeChild(mapPinsContaier);
     }
   }
 
-  function updateMapPins(map, announcements) {
-    window.card.removeMapCard(map);
-    removeMapPins(map);
-    showMapPins(map, announcements);
+  function update(map, announcements) {
+    window.card.remove(map);
+    remove(map);
+    list.appendChild(generatePinsFragment(announcements));
   }
 
-  function activateMapPin(mapPin) {
-    var oldActiveMapPin = document.querySelector('.' + PinClassName.ACTIVE);
+  function activate(mapPin) {
+    var oldActiveMapPin = document.querySelector('.' + ClassName.ACTIVE);
 
     if (oldActiveMapPin) {
-      oldActiveMapPin.classList.remove(PinClassName.ACTIVE);
+      oldActiveMapPin.classList.remove(ClassName.ACTIVE);
     }
 
-    mapPin.classList.add(PinClassName.ACTIVE);
+    mapPin.classList.add(ClassName.ACTIVE);
   }
 
-  function resetMainPin() {
-    mainPin.style.left = MainPinData.START_LEFT + 'px';
-    mainPin.style.top = MainPinData.START_TOP + 'px';
+  function reset() {
+    main.style.left = Data.START_LEFT + 'px';
+    main.style.top = Data.START_TOP + 'px';
 
     window.form.setAdress(getCurrentAddress());
   }
 
   window.pin = {
-    addDragMainPin: addDragMainPin,
-    showMapPins: showMapPins,
-    removeMapPins: removeMapPins,
-    updateMapPins: updateMapPins,
-    resetMainPin: resetMainPin
+    addDrag: addDrag,
+    show: show,
+    remove: remove,
+    update: update,
+    reset: reset
   };
 })();

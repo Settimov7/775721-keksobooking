@@ -7,49 +7,49 @@
   var main = document.querySelector('main');
   var currentPopup;
 
-  function closePopup() {
-    document.removeEventListener('keydown', onPopupEscPress);
-    document.removeEventListener('click', onPopupClick);
+  function close() {
+    document.removeEventListener('keydown', onEscPress);
+    document.removeEventListener('click', onClick);
     main.removeChild(currentPopup);
   }
 
-  function onPopupEscPress(evt) {
-    window.util.isEscEvent(evt, closePopup);
+  function onEscPress(evt) {
+    window.util.isEscEvent(evt, close);
   }
 
-  function onPopupClick(evt) {
+  function onClick(evt) {
     evt.preventDefault();
 
-    closePopup();
+    close();
   }
 
-  function openPopup(popup) {
-    document.addEventListener('keydown', onPopupEscPress);
-    document.addEventListener('click', onPopupClick);
+  function open(popup) {
+    document.addEventListener('keydown', onEscPress);
+    document.addEventListener('click', onClick);
 
     currentPopup = popup;
     main.appendChild(popup);
   }
 
-  function onErrorPopup(errorMessage) {
+  function showError(errorMessage, action) {
     var error = errorTemplate.cloneNode(true);
 
     error.querySelector('.error__message').textContent = 'Ошибка загрузки объявления: ' + errorMessage;
     error.querySelector('.error__button').addEventListener('click', function () {
-      window.map.turnOnMap();
+      action();
     });
 
-    openPopup(error);
+    open(error);
   }
 
-  function onSuccessPopup() {
+  function showSuccess() {
     var success = successTemplate.cloneNode(true);
 
-    openPopup(success);
+    open(success);
   }
 
   window.popup = {
-    onErrorPopup: onErrorPopup,
-    onSuccessPopup: onSuccessPopup
+    showError: showError,
+    showSuccess: showSuccess
   };
 })();
